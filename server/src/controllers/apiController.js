@@ -15,6 +15,7 @@ export const createApi = async (req, res) => {
         const docRef = await db.collection('apis').add(newApi);
         res.status(201).json({ id: docRef.id, ...newApi });
     } catch (error) {
+        console.error("🔥 Firebase Create Error:", error); // সার্ভারে এরর দেখার জন্য
         res.status(500).json({ error: error.message });
     }
 };
@@ -26,6 +27,7 @@ export const getApis = async (req, res) => {
         const apis = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         res.json(apis);
     } catch (error) {
+        console.error("🔥 Firebase Fetch Error:", error); // সার্ভারে এরর দেখার জন্য
         res.status(500).json({ error: error.message });
     }
 };
