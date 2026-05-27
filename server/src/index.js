@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import apiRoutes from './routes/api.js'; // নতুন রুট ইমপোর্ট
+import apiRoutes from './routes/api.js';
 
 dotenv.config();
 
@@ -9,8 +9,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// মূল লিংকে (Root Route) গেলে এই ওয়েলকাম মেসেজটি দেখাবে
+app.get('/', (req, res) => {
+    res.send('<h1 style="color:cyan; background:#0a0b1e; padding:20px; text-align:center;">TRICK A4IF SYSTEM BACKEND IS ONLINE 🟢</h1>');
+});
+
 // Routes
-app.use('/api/v1', apiRoutes); // এখন /api/v1/create বা /api/v1/list কল করা যাবে
+app.use('/api/v1', apiRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
