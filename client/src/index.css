@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+/* এটি আগের চেয়ে বেশি শক্তিশালী মেথড */
+body {
+  background-color: #0a0b1e; /* সরাসরি কালার কোড ব্যবহার করা নিরাপদ */
+  color: white;
+  margin: 0;
+  font-family: sans-serif;
+}
