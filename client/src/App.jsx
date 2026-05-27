@@ -1,15 +1,19 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
+        {/* কেউ সরাসরি ওয়েবসাইটে ঢুকলে তাকে লগইন পেজে পাঠিয়ে দেবে */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        
+        {/* লগইন এবং ড্যাশবোর্ড রাউট */}
         <Route path="/login" element={<Login />} />
-        {/* আপাতত ড্যাশবোর্ড পেজটি তৈরি করিনি, তাই ডিফল্টভাবে লগইনে পাঠাচ্ছি */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
 
