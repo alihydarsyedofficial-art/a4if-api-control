@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getAuth, signOut } from "firebase/auth";
+import { collection, onSnapshot, query } from "firebase/firestore"; // নতুন ইমপোর্ট
+import { db } from "../config/firebase"; // আপনার firebase config ফাইল
 import Sidebar from '../components/Sidebar';
 
 export default function Dashboard() {
@@ -8,29 +10,31 @@ export default function Dashboard() {
   const [name, setName] = useState('');
   const [limit, setLimit] = useState('');
 
-  // ডাটা রিফ্রেশ ফাংশন
-  const fetchApis = async () => {
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await axios.get(`${apiUrl}/api/v1/list`);
-      setApis(Array.isArray(res.data) ? res.data : (res.data.data || []));
-    } catch (err) {
-      console.error("Error fetching data:", err);
-    }
-  };
+  // রিয়েল-টাইম অটোমেশন: ডাটাবেসে পরিবর্তন হলে অটো আপডেট হবে
+  useEffect(() => {
+    const q = query(collection(db, "apis"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setApis(data);
+    });
+    
+    // কম্পোনেন্ট আনমাউন্ট হলে লিসেনার বন্ধ হবে
+    return () => unsubscribe();
+  }, []);
 
-  useEffect(() => { fetchApis(); }, []);
-
-  // API ইনজেকশন (নতুন যোগ করা)
+  // API ইনজেকশন (এটি ব্যাকএন্ড এপিআই এর মাধ্যমেই হবে)
   const handleInject = async () => {
     if (!name || !limit) return alert("Fill all fields");
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-    await axios.post(`${apiUrl}/api/v1/create`, { name, limit, expiryDate: "2026-12-31" });
-    setName(''); setLimit('');
-    fetchApis();
+    try {
+      await axios.post(`${apiUrl}/api/v1/create`, { name, limit, expiryDate: "2026-12-31" });
+      setName(''); setLimit('');
+      // আর আলাদা করে fetchApis কল করার দরকার নেই, রিয়েল-টাইম লিসেনার অটো ডাটা আপডেট করে দেবে!
+    } catch (err) {
+      alert("Error injecting API");
+    }
   };
 
-  // লগআউট ফাংশন
   const handleLogout = () => {
     signOut(getAuth()).then(() => window.location.href = '/login');
   };

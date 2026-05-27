@@ -1,10 +1,10 @@
 import express from 'express';
-import { createApi, getApis } from '../controllers/apiController.js';
+import { createApi, getApis, deleteApi } from '../controllers/apiController.js';
 
 const router = express.Router();
 
-// Routes
 router.post('/create', createApi);
 router.get('/list', getApis);
+router.delete('/revoke/:id', deleteApi); // নতুন রিভোক রাউট
 
 export default router;
